@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+
+body {
+    background-color: #f0ffff;
+}
+#header {
+    padding: 0 0 0 100px;
+}
+#data {
+    margin: 15px 0 0;
+}
+#buttonUser {
+    margin: 5px 0 0 90px;
+}
+#record {
+    margin: 5px 0 0 200px;
+}
+a:link {
+    color: black;
+    text-decoration: none;
+}
+a:visited {
+    color: black;
+    text-decoration: none;
+}
+a:active {
+    color: black;
+    text-decoration: none;
+}
+a:hover {
+    color: black;
+    text-decoration: none;
+}

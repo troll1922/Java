@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Module-Class: fomichev.Module1.Module1

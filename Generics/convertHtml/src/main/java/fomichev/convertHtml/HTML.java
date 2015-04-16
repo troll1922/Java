@@ -1,0 +1,100 @@
+package fomichev.convertHtml;
+
+import java.io.File;
+
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.swing.JFileChooser;
+
+/*
+ * Класс создания HTML файла
+ * @author Aleksey Fomichev
+ */
+public class HTML {
+	File fileText;								//Ссылка на файл
+	List <String> modifyText;					//Коллекция, где будет храниться модифицированный текст
+	List <String> dectionaryList;
+	int countFileHTML;							//Счетчик количества файлов
+	final String nameFileHTML = "ModifText";	//Название файла
+	
+	/**
+	 * Конструктор
+	 */
+	HTML (JFileChooser fileText, List<String> dectionaryList, int countString) {  
+		modifyText = new ArrayList<String>();
+		this.fileText = fileText.getSelectedFile();
+		this.dectionaryList = dectionaryList;
+		modifText ();							//Модифицирует текст
+		printFileText(modifyText, countString);	//Записывает текст в HTML
+	}
+	
+	/**
+	 * Метод изменяющий текст в файле
+	 */
+	void modifText () {
+		File fin;
+		Scanner sc = null;
+		try {
+			fin = new File(fileText.getPath());
+			sc = new Scanner(fin);
+			while (sc.hasNextLine()) {
+				String str1 = sc.nextLine();
+				int n = dectionaryList.size();      
+				for(int i = 0; i < n; i++) {
+					String str2 = dectionaryList.get(i);
+					str1 = str1.replace(str2+" ", "<i><b>"+str2+"</b></i>"+" ");  //заменяем слова совпадающие в словаре			
+					str1 = str1.replace(" "+str2, "<i><b>"+" "+str2+"</b></i>");
+					str1 = str1.replace(str2+",", "<i><b>"+str2+"</b></i>"+","); 
+					str1 = str1.replace(str2+".", "<i><b>"+str2+"</b></i>"+"."); 
+				}
+				modifyText.add(str1);	//заполняем коллекция измененным текстом		
+			}
+		} 
+		catch (FileNotFoundException e) {
+			System.out.println("Файл c текстом не найден");
+			e.printStackTrace();
+		}
+		finally {
+			sc.close();
+		}
+	}
+	
+	/**
+	 * Метод записывающий текст в формат html
+	 */
+	void printFileText(List<String> modText, int countString){
+		final String textBegin = "<!DOCTYPE html> \n<html>\n<head>\n<meta charset=\"Windows-1251\">\n<title>ConvertToHTML</title>\n</head>\n<body>";
+		final String textEnd = "</body>\n</html>";
+		File out;
+		FileWriter fwr = null;
+		int currentString = 0;
+		countFileHTML = 1;
+		try {
+			int n = modText.size();
+			for (int i = 0; i < n; i++) {	
+				if ((currentString == 0)||(currentString == countString)) {
+					out = new File(nameFileHTML+countFileHTML+".html");
+					fwr = new FileWriter(out);
+					fwr.write(textBegin);
+				}			
+				fwr.write(modText.get(i)+"<br>\n"); //запись в файл
+				currentString++;
+				if ((currentString == countString)||(i==(n-1))) {
+					fwr.write(textEnd);
+					fwr.close();	
+					countFileHTML++;
+					currentString = 0;
+				}
+			}		
+		} 
+		catch (IOException e) {
+			System.out.println("Ошибка при создании html файла");
+			e.printStackTrace();
+		}
+	}	
+}
